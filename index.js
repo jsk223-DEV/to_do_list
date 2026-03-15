@@ -165,6 +165,8 @@ app.get('/update-section-theme', async (req, res) => {
 	}
 });
 
-app.listen(PORT, () => {
-	console.log(`App running at localhost:${PORT}`);
-});
+// app.listen(PORT, () => {
+// 	console.log(`App running at localhost:${PORT}`);
+// });
+
+export default app;
