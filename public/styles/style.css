@@ -107,6 +107,7 @@ main {
 					font-size: 17px;
 					color: white;
 					background-color: transparent;
+					padding-left: 10px;
 				}
 				.buttons {
 					display: flex;
@@ -120,6 +121,7 @@ main {
 				overflow-x: hidden;
 				/* border: 1px solid red; */
 				scrollbar-width: thin;
+				scrollbar-color: rgb(var(--r), var(--g), var(--b)) transparent;
 				display: flex;
 				flex-direction: column;
 				padding: 10px;

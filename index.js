@@ -8,83 +8,21 @@ const PORT = 3000;
 const app = express();
 
 const db = new PG.Client({
-	connectionString: process.env.DATABASE_URL,
-	host: process.env.HOSTNAME,
-	port: process.env.PORT,
-	database: process.env.DATABASE,
-	user: process.env.USERNAME,
-	password: process.env.PASSWORD,
+	connectionString: process.env.CONNECTION_STRING,
 });
+// const db = new PG.Client({
+// 	connectionString: process.env.DATABASE_URL,
+// 	host: process.env.HOSTNAME,
+// 	port: process.env.PORT,
+// 	database: process.env.DATABASE,
+// 	user: process.env.USERNAME,
+// 	password: process.env.PASSWORD,
+// });
 
 db.connect();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
-
-const exampleData = [
-	{
-		id: 0,
-		title: '1st Title',
-		color: [16, 0, 163],
-		toDos: [
-			{ id: 0, title: '1st To Do' },
-			{ id: 1, title: '2nd To Do' },
-			{ id: 2, title: '3rd To Do' },
-			{ id: 3, title: '4th To Do' },
-		],
-	},
-	{
-		id: 1,
-		title: '2nd Title',
-		color: [163, 0, 16],
-		toDos: [
-			{ id: 0, title: '1st To Do' },
-			{ id: 1, title: '2nd To Do' },
-			{ id: 2, title: '3rd To Do' },
-			{ id: 3, title: '4th To Do' },
-		],
-	},
-	{
-		id: 2,
-		title: '3rd Title',
-		color: [0, 163, 16],
-		toDos: [
-			{ id: 0, title: '1st To Do' },
-			{ id: 1, title: '2nd To Do' },
-			{ id: 2, title: '3rd To Do' },
-			{ id: 3, title: '4th To Do' },
-			{ id: 4, title: '5th To Do' },
-			{ id: 5, title: '6th To Do' },
-			{ id: 6, title: '7th To Do' },
-			{ id: 7, title: '8th To Do' },
-			{ id: 8, title: '9th To Do' },
-			{ id: 9, title: '10th To Do' },
-			{ id: 10, title: '11th To Do' },
-			{ id: 11, title: '12th To Do' },
-			{ id: 12, title: '13th To Do' },
-			{ id: 13, title: '14th To Do' },
-		],
-	},
-	{
-		id: 3,
-		title: '4th Title',
-		color: [163, 163, 0],
-		toDos: [
-			{ id: 0, title: '1st To Do' },
-			{ id: 1, title: '2nd To Do' },
-			{ id: 2, title: '3rd To Do' },
-		],
-	},
-	{
-		id: 4,
-		title: '5th Title',
-		color: [0, 163, 163],
-		toDos: [
-			{ id: 0, title: '1st To Do' },
-			{ id: 1, title: '2st To Do' },
-		],
-	},
-];
 
 app.get('/', async (req, res) => {
 	try {
@@ -192,7 +130,7 @@ app.get('/new-section', async (req, res) => {
 	try {
 		const result = await db.query(
 			'INSERT INTO sections (color, selected, order_num) VALUES ($1, $2, $3) RETURNING id',
-			['163,0,16', false, 0],
+			[req.query.color, false, 0],
 		);
 		res.json({ id: result.rows[0].id });
 	} catch (err) {

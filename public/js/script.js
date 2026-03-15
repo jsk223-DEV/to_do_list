@@ -553,12 +553,19 @@ async function deleteSection(id) {
 }
 
 async function addSection() {
-	const result = await fetch(`/new-section`, { method: 'GET' });
+	const color = colors[rndInt(colors.length - 1)];
+	const r = parseInt(color.substring(1, 3), 16);
+	const g = parseInt(color.substring(3, 5), 16);
+	const b = parseInt(color.substring(5, 7), 16);
+	const result = await fetch(`/new-section?color=${r},${g},${b}`, { method: 'GET' });
 	const data = await result.json();
 	const sectionContainer = document.querySelector('#section_container');
 	const newSection = document.createElement('div');
 	newSection.dataset.id = data.id;
 	newSection.classList.add('section');
+	newSection.style.setProperty('--r', r);
+	newSection.style.setProperty('--g', g);
+	newSection.style.setProperty('--b', b);
 	newSection.innerHTML = `
 			<div class="top-bar">
 				<input onchange="updateSectionTitle(${data.id}, this.value)" class="title" value="" />
@@ -653,9 +660,8 @@ async function addSection() {
 	quickButton.style.backgroundColor = 'rgb(163, 0, 16)';
 	quickButton.dataset.id = data.id;
 	quickButton.setAttribute('onclick', `scrollToSection(${data.id})`);
+	quickButton.style.backgroundColor = `rgb(${r}, ${g}, ${b})`;
 	nav.querySelector('#add_section').after(quickButton);
-	const color = colors[rndInt(colors.length - 1)];
-	sectionThemeChange(color, data.id);
 	scrollToSection(data.id);
 }
 
