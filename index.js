@@ -11,10 +11,10 @@ dotenv.config();
 
 const PORT = 3000;
 const app = express();
-
+console.log(process.env.CONNECTION_STRING);
 const db = new PG.Client({
 	connectionString: process.env.CONNECTION_STRING,
-	ssl: false,
+	ssl: { rejectUnauthorized: false },
 });
 // const db = new PG.Client({
 // 	connectionString: process.env.DATABASE_URL,
