@@ -14,6 +14,7 @@ const app = express();
 
 const db = new PG.Client({
 	connectionString: process.env.CONNECTION_STRING,
+	ssl: false,
 });
 // const db = new PG.Client({
 // 	connectionString: process.env.DATABASE_URL,
@@ -24,7 +25,7 @@ const db = new PG.Client({
 // 	password: process.env.PASSWORD,
 // });
 
-//db.connect();
+db.connect();
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
@@ -43,7 +44,7 @@ app.get('/', async (req, res) => {
 		// }
 		// res.render('index.ejs', { sections: sections.rows });
 		console.log(app.get('views'));
-		res.render('home.ejs', { sections: [] });
+		res.render('index.ejs', { sections: [] });
 	} catch (err) {
 		console.error(err);
 		res.sendStatus(404);
