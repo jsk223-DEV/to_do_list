@@ -19,7 +19,7 @@ const db = new PG.Client({
 // 	password: process.env.PASSWORD,
 // });
 
-db.connect();
+//db.connect();
 
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
@@ -27,15 +27,16 @@ app.use(express.static('public'));
 
 app.get('/', async (req, res) => {
 	try {
-		const sections = await db.query('SELECT * FROM sections ORDER BY order_num ASC, id DESC');
-		for (let i = 0; i < sections.rows.length; i++) {
-			const todos = await db.query(
-				'SELECT * FROM todos WHERE section_id = $1 ORDER BY order_num ASC, id DESC',
-				[sections.rows[i].id],
-			);
-			sections.rows[i].toDos = todos.rows;
-		}
-		res.render('index.ejs', { sections: sections.rows });
+		// const sections = await db.query('SELECT * FROM sections ORDER BY order_num ASC, id DESC');
+		// for (let i = 0; i < sections.rows.length; i++) {
+		// 	const todos = await db.query(
+		// 		'SELECT * FROM todos WHERE section_id = $1 ORDER BY order_num ASC, id DESC',
+		// 		[sections.rows[i].id],
+		// 	);
+		// 	sections.rows[i].toDos = todos.rows;
+		// }
+		// res.render('index.ejs', { sections: sections.rows });
+		res.render('index.ejs', { sections: [] });
 	} catch (err) {
 		console.error(err);
 		res.sendStatus(404);
