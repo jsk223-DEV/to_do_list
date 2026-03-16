@@ -19,26 +19,28 @@ const db = new PG.Client({
 // 	password: process.env.PASSWORD,
 // });
 
-db.connect();
+// db.connect();
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 app.get('/', async (req, res) => {
-	try {
-		const sections = await db.query('SELECT * FROM sections ORDER BY order_num ASC, id DESC');
-		for (let i = 0; i < sections.rows.length; i++) {
-			const todos = await db.query(
-				'SELECT * FROM todos WHERE section_id = $1 ORDER BY order_num ASC, id DESC',
-				[sections.rows[i].id],
-			);
-			sections.rows[i].toDos = todos.rows;
-		}
-		res.render('index.ejs', { sections: sections.rows });
-	} catch (err) {
-		console.error(err);
-		res.sendStatus(404);
-	}
+	// try {
+	// 	const sections = await db.query('SELECT * FROM sections ORDER BY order_num ASC, id DESC');
+	// 	for (let i = 0; i < sections.rows.length; i++) {
+	// 		const todos = await db.query(
+	// 			'SELECT * FROM todos WHERE section_id = $1 ORDER BY order_num ASC, id DESC',
+	// 			[sections.rows[i].id],
+	// 		);
+	// 		sections.rows[i].toDos = todos.rows;
+	// 	}
+	// 	res.render('index.ejs', { sections: sections.rows });
+	// } catch (err) {
+	// 	console.error(err);
+	// 	res.sendStatus(404);
+	// }
+	console.log('Hello World');
+	res.send('Hello World');
 });
 
 app.get('/order-sections', async (req, res) => {
