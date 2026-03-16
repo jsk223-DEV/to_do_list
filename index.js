@@ -30,21 +30,21 @@ db.connect();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+// app.use(express.static('public'));
 
 app.get('/', async (req, res) => {
 	try {
-		// const sections = await db.query('SELECT * FROM sections ORDER BY order_num ASC, id DESC');
-		// for (let i = 0; i < sections.rows.length; i++) {
-		// 	const todos = await db.query(
-		// 		'SELECT * FROM todos WHERE section_id = $1 ORDER BY order_num ASC, id DESC',
-		// 		[sections.rows[i].id],
-		// 	);
-		// 	sections.rows[i].toDos = todos.rows;
-		// }
-		// res.render('index.ejs', { sections: sections.rows });
-		console.log(process.env.CONNECTION_STRING);
-		res.render('index.ejs', { sections: [] });
+		const sections = await db.query('SELECT * FROM sections ORDER BY order_num ASC, id DESC');
+		for (let i = 0; i < sections.rows.length; i++) {
+			const todos = await db.query(
+				'SELECT * FROM todos WHERE section_id = $1 ORDER BY order_num ASC, id DESC',
+				[sections.rows[i].id],
+			);
+			sections.rows[i].toDos = todos.rows;
+		}
+		res.render('index.ejs', { sections: sections.rows });
+		// console.log(process.env.CONNECTION_STRING);
+		// res.render('index.ejs', { sections: [] });
 	} catch (err) {
 		console.error(err);
 		res.sendStatus(404);
