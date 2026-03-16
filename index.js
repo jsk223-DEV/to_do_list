@@ -11,7 +11,7 @@ dotenv.config();
 
 const PORT = 3000;
 const app = express();
-console.log(process.env.CONNECTION_STRING);
+
 const db = new PG.Client({
 	connectionString: process.env.CONNECTION_STRING,
 	ssl: { rejectUnauthorized: false },
@@ -43,7 +43,7 @@ app.get('/', async (req, res) => {
 		// 	sections.rows[i].toDos = todos.rows;
 		// }
 		// res.render('index.ejs', { sections: sections.rows });
-		console.log(app.get('views'));
+		console.log(process.env.CONNECTION_STRING);
 		res.render('index.ejs', { sections: [] });
 	} catch (err) {
 		console.error(err);
