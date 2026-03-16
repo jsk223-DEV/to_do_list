@@ -36,7 +36,8 @@ app.get('/', async (req, res) => {
 		// 	sections.rows[i].toDos = todos.rows;
 		// }
 		// res.render('index.ejs', { sections: sections.rows });
-		res.render('home', { sections: [] });
+		console.log(app.get('views'));
+		res.render('home.ejs', { sections: [] });
 	} catch (err) {
 		console.error(err);
 		res.sendStatus(404);
