@@ -330,3 +330,53 @@ footer {
 	align-items: center;
 	background-color: var(--FG);
 }
+
+#mobile_overlay {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	top: 0;
+	left: 0;
+	background-color: var(--BG);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 2000;
+	display: none;
+}
+
+@media only screen and (max-width: 1000px) {
+	#mobile_overlay {
+		display: block !important;
+	}
+	body {
+		overflow: hidden;
+	}
+	main {
+		display: none;
+	}
+	/* #section_container {
+		gap: 20px !important;
+		& .section {
+			width: 70% !important;
+			min-width: 70% !important;
+			& .button {
+				visibility: visible !important;
+			}
+			& .to-do {
+				& .buttons {
+					gap: 2px !important;
+				}
+				& .button {
+					scale: 0.8 !important;
+					&:hover {
+						scale: 0.9 !important;
+					}
+				}
+			}
+		}
+		& > .spacer {
+			width: 1px !important;
+		}
+	} */
+}
