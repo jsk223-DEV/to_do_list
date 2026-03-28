@@ -17,12 +17,11 @@ const db = new PG.Client({
 	ssl: { rejectUnauthorized: false },
 });
 // const db = new PG.Client({
-// 	connectionString: process.env.DATABASE_URL,
-// 	host: process.env.HOSTNAME,
-// 	port: process.env.PORT,
-// 	database: process.env.DATABASE,
-// 	user: process.env.USERNAME,
-// 	password: process.env.PASSWORD,
+// 	host: 'localhost',
+// 	port: 5432,
+// 	database: 'to_do_list_debug',
+// 	user: 'postgres',
+// 	password: '1035pg$T8',
 // });
 
 db.connect();
