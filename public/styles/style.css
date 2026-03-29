@@ -17,12 +17,32 @@ body {
 	user-select: none;
 }
 header {
+	padding: 0 10px;
 	width: 100%;
 	height: 50px;
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	background-color: var(--FG);
+	gap: 5px;
+	& .logout {
+		padding: 0px 5px;
+		border-radius: 5px;
+		border: 2px outset white;
+		text-decoration: none;
+		color: black;
+		background-color: lightgrey;
+		font-size: 13px;
+		height: 25px;
+		&:hover {
+			padding: 1px 5px;
+			height: 27px;
+		}
+	}
+}
+
+main.login-main {
+	justify-content: center;
 }
 
 main {

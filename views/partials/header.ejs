@@ -15,7 +15,11 @@
 </head>
 <body>
     <header>
-        <h2 id="title"></h2>
+        <% if(locals.user) {%>
+            <span></span>
+            <span><%= user %></span>
+            <a class="logout" href="/logout">Logout</a>
+        <% } %>
     </header>
 <% if(false) {%>
 </body>
