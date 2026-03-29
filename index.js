@@ -30,23 +30,24 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 
-app.use(
-	cookieSession({
-		name: 'session',
-		keys: [process.env.SESSION_SECRET],
-		maxAge: 1000 * 60 * 60 * 24 * 100,
-	}),
-);
 // app.use(
-// 	session({
-// 		secret: process.env.SESSION_SECRET,
-// 		resave: false,
-// 		saveUninitialized: true,
-// 		cookie: {
-// 			maxAge: 1000 * 60 * 60 * 24 * 100,
-// 		},
+// 	cookieSession({
+// 		name: 'session',
+// 		keys: [process.env.SESSION_SECRET],
+// 		maxAge: 1000 * 60 * 60 * 24 * 100,
+
 // 	}),
 // );
+app.use(
+	session({
+		secret: process.env.SESSION_SECRET,
+		resave: false,
+		saveUninitialized: true,
+		cookie: {
+			maxAge: 1000 * 60 * 60 * 24 * 100,
+		},
+	}),
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
