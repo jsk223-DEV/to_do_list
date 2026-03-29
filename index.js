@@ -7,7 +7,7 @@ import session from 'express-session';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import bcrypt from 'bcrypt';
-import { error } from 'console';
+import cookieSession from 'cookie-session';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,22 +31,28 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
-	session({
-		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: true,
-		cookie: {
-			maxAge: 1000 * 60 * 60 * 24 * 100,
-		},
+	cookieSession({
+		name: 'session',
+		keys: [process.env.SESSION_SECRET],
+		maxAge: 1000 * 60 * 60 * 24 * 100,
 	}),
 );
+// app.use(
+// 	session({
+// 		secret: process.env.SESSION_SECRET,
+// 		resave: false,
+// 		saveUninitialized: true,
+// 		cookie: {
+// 			maxAge: 1000 * 60 * 60 * 24 * 100,
+// 		},
+// 	}),
+// );
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/', async (req, res) => {
 	try {
-		// console.log(req.session.messages);
 		if (req.isAuthenticated()) {
 			res.redirect('/sections');
 		} else {
