@@ -3,7 +3,6 @@ import PG from 'pg';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import session from 'express-session';
 import passport from 'passport';
 import { Strategy } from 'passport-local';
 import bcrypt from 'bcrypt';
@@ -18,6 +17,8 @@ const PORT = 3000;
 const app = express();
 const saltRounds = 10;
 
+let userMain;
+
 const db = new PG.Client({
 	connectionString: process.env.CONNECTION_STRING,
 	ssl: { rejectUnauthorized: false },
@@ -30,24 +31,24 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }));
 
-// app.use(
-// 	cookieSession({
-// 		name: 'session',
-// 		keys: [process.env.SESSION_SECRET],
-// 		maxAge: 1000 * 60 * 60 * 24 * 100,
-
-// 	}),
-// );
 app.use(
-	session({
-		secret: process.env.SESSION_SECRET,
-		resave: false,
-		saveUninitialized: true,
-		cookie: {
-			maxAge: 1000 * 60 * 60 * 24 * 100,
-		},
+	cookieSession({
+		name: 'session',
+		keys: ['TopSecret'],
+		httpOnly: true,
+		maxAge: 1000 * 60 * 60 * 24 * 100,
 	}),
 );
+// app.use(
+// 	session({
+// 		secret: process.env.SESSION_SECRET,
+// 		resave: false,
+// 		saveUninitialized: true,
+// 		cookie: {
+// 			maxAge: 1000 * 60 * 60 * 24 * 100,
+// 		},
+// 	}),
+// );
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -76,17 +77,19 @@ app.post(
 	passport.authenticate('local', {
 		successRedirect: '/sections',
 		failureRedirect: '/',
-		failureMessage: true,
+		failureMessage: false,
 	}),
 );
 
 app.get('/logout', (req, res) => {
-	req.logout((err) => {
-		if (err) {
-			res.send('Error logging out: ' + err);
-		}
-		res.redirect('/');
-	});
+	// req.logout((err) => {
+	// 	if (err) {
+	// 		res.send('Error logging out: ' + err);
+	// 	}
+	// 	res.redirect('/');
+	// });
+	req.session = null;
+	res.redirect('/');
 });
 
 app.post('/register', async (req, res) => {
@@ -235,6 +238,7 @@ app.get('/delete-section', async (req, res) => {
 
 app.get('/new-section', async (req, res) => {
 	try {
+		console.log(req.user);
 		const result = await db.query(
 			'INSERT INTO sections (color, selected, order_num, user_id) VALUES ($1, $2, $3, $4) RETURNING id',
 			[req.query.color, false, 0, req.user.id],
@@ -292,19 +296,21 @@ passport.use(
 				cb(null, false, { message: 'Username not found' });
 			}
 		} catch (err) {
-			return cb(err);
+			return cb(err, false);
 		}
 	}),
 );
 
 //serializeUser stores the user in the store after succesfull authentication
 passport.serializeUser((user, cb) => {
-	cb(null, user);
+	cb(null, user.id);
 });
 
 //deserializeUser fetches the user from the store when needed
-passport.deserializeUser((user, cb) => {
-	cb(null, user);
+passport.deserializeUser(async (user, cb) => {
+	const result = await db.query('SELECT * FROM users WHERE id = $1', [user]);
+	// console.log('ds', result);
+	cb(null, result.rows[0]);
 });
 
 // app.listen(PORT, () => {
