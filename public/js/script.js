@@ -193,7 +193,7 @@ function stopMove(e) {
 			behavior: 'smooth',
 			inline: 'center',
 		});
-		await fetch(`/order-sections?order=${orderArray.toString()}`, {
+		await fetch(`sections/order?order=${orderArray.toString()}`, {
 			method: 'GET',
 		});
 	}, transitionTime);
@@ -361,7 +361,7 @@ function stopMoveToDo(e) {
 	activeButton.style.transition = `top ${transitionTime / 1000}s ease`;
 	setTimeout(async () => {
 		activeButton.style.transition = '';
-		await fetch(`/order-todos?section=${sectionId}&order=${orderArray.toString()}`, {
+		await fetch(`todos/order?section=${sectionId}&order=${orderArray.toString()}`, {
 			method: 'GET',
 		});
 		// activeButton.scrollIntoView({
@@ -403,7 +403,7 @@ const colors = [
 ];
 
 async function addToDo(section) {
-	const result = await fetch(`/new-to-do?section=${section.dataset.id}`, { method: 'GET' });
+	const result = await fetch(`todos/new?section=${section.dataset.id}`, { method: 'GET' });
 	const data = await result.json();
 	const toDoContainer = section.querySelector('.to-do-container');
 	const newToDo = document.createElement('div');
@@ -475,11 +475,11 @@ async function addToDo(section) {
 }
 
 async function updateToDoText(toDoId, value) {
-	await fetch(`/update-to-do-text?id=${toDoId}&text=${value}`);
+	await fetch(`todos/update-text?id=${toDoId}&text=${value}`);
 }
 
 async function deleteToDo(id, element) {
-	const result = await fetch(`/delete-to-do?id=${id}`);
+	const result = await fetch(`todos/delete?id=${id}`);
 	if (result.status === 200) {
 		element.remove();
 	}
@@ -496,11 +496,11 @@ async function toggleToDoComplete(toDo) {
 	});
 	if (completed) {
 		orderArray.unshift(toDo.dataset.id);
-		const result = await fetch(`/set-to-do-complete?complete=false&id=${toDo.dataset.id}`);
+		const result = await fetch(`todos/set-complete?complete=false&id=${toDo.dataset.id}`);
 		if (result.status !== 200) {
 			return;
 		}
-		const orderResult = await fetch(`/order-todos?order=${orderArray.toString()}`);
+		const orderResult = await fetch(`todos/order?order=${orderArray.toString()}`);
 		if (orderResult.status !== 200) {
 			return;
 		}
@@ -511,11 +511,11 @@ async function toggleToDoComplete(toDo) {
 		completeButton.title = 'Complete To Do';
 	} else if (!completed) {
 		orderArray.push(toDo.dataset.id);
-		const result = await fetch(`/set-to-do-complete?complete=true&id=${toDo.dataset.id}`);
+		const result = await fetch(`todos/set-complete?complete=true&id=${toDo.dataset.id}`);
 		if (result.status !== 200) {
 			return;
 		}
-		const orderResult = await fetch(`/order-todos?order=${orderArray.toString()}`);
+		const orderResult = await fetch(`todos/order?order=${orderArray.toString()}`);
 		if (orderResult.status !== 200) {
 			return;
 		}
@@ -530,7 +530,7 @@ async function toggleToDoComplete(toDo) {
 //need to get param{element} yet and delete to dos inside section from index.js and figure out wich section to scroll to next
 async function deleteSection(id) {
 	const element = document.querySelector(`.section[data-id="${id}"]`);
-	const result = await fetch(`/delete-section?id=${id}`);
+	const result = await fetch(`sections/delete?id=${id}`);
 	if (result.status === 200) {
 		let nextId;
 		if (
@@ -557,7 +557,7 @@ async function addSection() {
 	const r = parseInt(color.substring(1, 3), 16);
 	const g = parseInt(color.substring(3, 5), 16);
 	const b = parseInt(color.substring(5, 7), 16);
-	const result = await fetch(`/new-section?color=${r},${g},${b}`, { method: 'GET' });
+	const result = await fetch(`sections/new?color=${r},${g},${b}`, { method: 'GET' });
 	const data = await result.json();
 	const sectionContainer = document.querySelector('#section_container');
 	const newSection = document.createElement('div');
@@ -666,7 +666,7 @@ async function addSection() {
 }
 
 async function updateSectionTitle(sectionId, value) {
-	const result = await fetch(`/update-section-title?id=${sectionId}&title=${value}`);
+	const result = await fetch(`sections/update-title?id=${sectionId}&title=${value}`);
 	if (result.status !== 200) {
 		return;
 	}
@@ -688,7 +688,7 @@ async function sectionThemeChange(color, id) {
 	const r = parseInt(color.substring(1, 3), 16);
 	const g = parseInt(color.substring(3, 5), 16);
 	const b = parseInt(color.substring(5, 7), 16);
-	const result = await fetch(`/update-section-theme?color=${r},${g},${b}&id=${id}`);
+	const result = await fetch(`sections/update-theme?color=${r},${g},${b}&id=${id}`);
 	if (result.status === 200) {
 		sectionThemeInput(color, id);
 	}
