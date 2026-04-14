@@ -148,7 +148,7 @@ main {
 					rgba(var(--r), var(--g), var(--b), 0.4),
 					rgba(var(--r), var(--g), var(--b), 0.3)
 				);
-				& .to-do:has(+ .dragging-manual)::after {
+				/* & .to-do:has(+ .dragging-manual)::after {
 					content: '';
 					position: absolute;
 					width: 100%;
@@ -158,8 +158,9 @@ main {
 					top: calc(100% + 8px);
 					left: -2px;
 					scale: 1.04;
-				}
-				& .to-do {
+					background-color: rgba(var(--r), var(--g), var(--b), 0.4); } */
+				& .to-do,
+				& .to-do-dragger {
 					padding: 12px 15px;
 					border-radius: 25px;
 					background-image: linear-gradient(
@@ -172,6 +173,12 @@ main {
 					position: relative;
 					justify-content: space-between;
 					/* transition: top 0.05s; */
+					&.to-do-dragger {
+						/* width: 100%; */
+						scale: 1.04;
+						position: fixed;
+						display: none;
+					}
 					&.completed {
 						background-color: transparent;
 						background-image: none;
@@ -182,22 +189,24 @@ main {
 						}
 					}
 					&.dragging-manual {
+						/* visibility: hidden; */
 						scale: 1.04;
 						opacity: 0.5;
 						.button.move:hover {
 							cursor: grabbing !important;
 						}
-						& + .to-do::before {
+						/*& + .to-do::before {
 							content: '';
 							position: absolute;
 							width: 100%;
 							height: 100%;
 							border-radius: 25px;
 							border: 2px solid white;
+							background-color: rgba(var(--r), var(--g), var(--b), 0.4); 
 							top: calc(-100% - 12px);
 							left: -2px;
 							scale: 1.04;
-						}
+						}*/
 					}
 					& .text {
 						width: 100%;

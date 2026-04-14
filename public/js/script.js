@@ -201,21 +201,25 @@ function stopMove(e) {
 	activeButton.classList.remove('dragging-manual');
 }
 
-let orignalYt;
-let moveButtont;
-let mouseYt;
 let scrollIntt;
 const scrollMargint = 50;
 const maxScrollAmountt = 20;
 const minScrollAmountt = 1;
 function startMoveToDo(e, activeElement, parent) {
 	const button = activeElement;
-	moveButtont = e.target;
-	orignalYt = moveButtont.getBoundingClientRect().top + moveButtont.offsetHeight / 2;
 	parent.classList.add('dragging-manual-parent');
-	// orignalYt = e.clientY;
-	button.style.zIndex = 1000;
 	button.classList.add('dragging-manual');
+	const dragger = parent.querySelectorAll('.to-do-dragger')[0];
+	if (activeElement.classList.contains('completed')) {
+		dragger.classList.add('completed');
+	} else if (dragger.classList.contains('completed')) {
+		dragger.classList.remove('completed');
+	}
+	dragger.style.width = button.offsetWidth + 'px';
+	dragger.querySelector('.text').innerText = button.querySelector('.text').value || 'Untitled';
+	dragger.style.display = 'block';
+	dragger.style.left = parent.getBoundingClientRect().left + 10 + 'px';
+	dragger.style.top = e.clientY - dragger.offsetHeight / 2 + 'px';
 	document.addEventListener('mousemove', moveToDo);
 	document.addEventListener('mouseup', stopMoveToDo);
 }
@@ -223,23 +227,20 @@ function startMoveToDo(e, activeElement, parent) {
 function moveToDo(e) {
 	const activeButton = document.querySelector('.dragging-manual');
 	const parent = document.querySelector('.dragging-manual-parent');
-	const dist = e.clientY - orignalYt;
-	mouseYt = e.clientY;
+	const dragger = parent.querySelectorAll('.to-do-dragger')[0];
+	dragger.style.top = e.clientY - dragger.offsetHeight / 2 + 'px';
 
 	if (
 		e.clientY >= parent.getBoundingClientRect().top + parent.offsetHeight - scrollMargint &&
-		parent.offsetHeight + parent.scrollTop < parent.scrollHeight &&
-		(activeButton.nextElementSibling ||
-			activeButton.getBoundingClientRect().bottom < parent.getBoundingClientRect().bottom)
+		parent.offsetHeight + parent.scrollTop < parent.scrollHeight
 	) {
 		if (scrollIntt !== undefined) {
 			return;
 		}
-		console.log('scrolling down');
 		scrollIntt = setInterval(() => {
 			let scrollAmount = mapNumberRange(
 				mapNumberRange(
-					mouseYt,
+					e.clientY,
 					0,
 					parent.getBoundingClientRect().top + parent.offsetHeight,
 					parent.getBoundingClientRect().top + parent.offsetHeight,
@@ -252,13 +253,8 @@ function moveToDo(e) {
 			);
 			if (parent.offsetHeight + parent.scrollTop < parent.scrollHeight) {
 				parent.scrollTop += scrollAmount;
-				activeButton.style.top = `0px`;
-				// orignalYt -= scrollAmount;
-				orignalYt = moveButtont.getBoundingClientRect().top + moveButtont.offsetHeight / 2;
-				checkSwapToDo(mouseYt);
+				checkSwapToDo(e.clientY);
 			} else {
-				orignalYt = moveButtont.getBoundingClientRect().top + moveButtont.offsetHeight / 2;
-				// parent.scrollTop = parent.scrollHeight;
 				clearInterval(scrollIntt);
 				scrollIntt = undefined;
 			}
@@ -270,107 +266,85 @@ function moveToDo(e) {
 		if (scrollIntt !== undefined) {
 			return;
 		}
-		// console.log('scrolling up');
 		scrollIntt = setInterval(() => {
-			// console.log(parent.scrollTop);
 			if (parent.scrollTop > 0) {
 				let scrollAmount = mapNumberRange(
-					mouseYt - parent.getBoundingClientRect().top,
+					e.clientY - parent.getBoundingClientRect().top,
 					0,
 					scrollMargint,
 					maxScrollAmountt,
 					minScrollAmountt,
 				);
-				// console.log(scrollAmount);
 				parent.scrollTop -= scrollAmount;
-				activeButton.style.top = `0px`;
-				// orignalYt += scrollAmount;
-				checkSwapToDo(mouseYt);
+				checkSwapToDo(e.clientY);
 			} else {
-				// parent.scrollTop = 0;
-				orignalYt = moveButtont.getBoundingClientRect().top + moveButtont.offsetHeight / 2;
 				clearInterval(scrollIntt);
 				scrollIntt = undefined;
 			}
 		}, 40);
 	} else {
 		if (scrollIntt) {
-			// parent.scrollTop = 0;
-			orignalYt = moveButtont.getBoundingClientRect().top + moveButtont.offsetHeight / 2;
-
 			clearInterval(scrollIntt);
 			scrollIntt = undefined;
 		}
-		// if (!activeButton.nextElementSibling) {
-		// 	parent.scrollTop = parent.scrollHeight;
-		// }
-		activeButton.style.top = `${dist}px`;
+		if (
+			!activeButton.nextElementSibling ||
+			activeButton.nextElementSibling.classList.contains('to-do-dragger')
+		) {
+			parent.scrollTop = parent.scrollHeight;
+		}
 		checkSwapToDo(e.clientY);
 	}
 
 	function checkSwapToDo(mouseY) {
 		if (
 			activeButton.nextElementSibling &&
+			!activeButton.nextElementSibling.classList.contains('to-do-dragger') &&
 			mouseY > activeButton.nextElementSibling.getBoundingClientRect().top
 		) {
-			// console.log(mouseY);
 			const nextElement = activeButton.nextElementSibling;
+			console.log([parent, nextElement, activeButton]);
 			parent.insertBefore(nextElement, activeButton);
-			activeButton.style.top = '0px';
-			// orignalYt += nextElement.offsetHeight + 10;
-			orignalYt = moveButtont.getBoundingClientRect().top + moveButtont.offsetHeight / 2;
 		}
 		if (
 			activeButton.previousElementSibling &&
+			!activeButton.previousElementSibling.classList.contains('to-do-dragger') &&
 			mouseY <
 				activeButton.previousElementSibling.getBoundingClientRect().top +
 					activeButton.previousElementSibling.offsetHeight
 		) {
 			const previousElement = activeButton.previousElementSibling;
-
 			parent.insertBefore(activeButton, previousElement);
 			previousElement.style.top = '20px';
 			setTimeout(() => {
 				previousElement.style.top = '0px';
 			}, 5);
-			// orignalYt -= previousElement.offsetHeight + 10;
-			activeButton.style.top = '0px';
-			orignalYt = moveButtont.getBoundingClientRect().top + moveButtont.offsetHeight / 2;
 		}
 	}
 }
 
-function stopMoveToDo(e) {
-	const transitionTime = 200;
+async function stopMoveToDo(e) {
 	const activeButton = document.querySelector('.dragging-manual');
 	const parent = document.querySelector('.dragging-manual-parent');
 	const sectionId = parent.parentElement.dataset.id;
 	const toDos = parent.querySelectorAll('.to-do');
+	parent.querySelectorAll('.to-do-dragger')[0].style.display = 'none';
+
 	const orderArray = [];
 	toDos.forEach((toDo) => {
 		orderArray.push(toDo.dataset.id);
 	});
-	parent.classList.remove('dragging-manual-parent');
 	if (scrollIntt) {
 		clearInterval(scrollIntt);
 		scrollIntt = undefined;
 	}
+	parent.classList.remove('dragging-manual-parent');
+	activeButton.classList.remove('dragging-manual');
 	document.removeEventListener('mousemove', moveToDo);
 	document.removeEventListener('mouseup', stopMoveToDo);
-	activeButton.style.top = '0px';
-	activeButton.style.transition = `top ${transitionTime / 1000}s ease`;
-	setTimeout(async () => {
-		activeButton.style.transition = '';
-		await fetch(`todos/order?section=${sectionId}&order=${orderArray.toString()}`, {
-			method: 'GET',
-		});
-		// activeButton.scrollIntoView({
-		// 	behavior: 'smooth',
-		// 	inline: 'center',
-		// });
-	}, transitionTime);
-	activeButton.style.zIndex = 0;
-	activeButton.classList.remove('dragging-manual');
+	await fetch(`todos/order?section=${sectionId}&order=${orderArray.toString()}`, {
+		method: 'GET',
+	});
 }
 
 function mapNumberRange(value, inMin, inMax, outMin, outMax) {
@@ -470,7 +444,10 @@ async function addToDo(section) {
 							<path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" /></svg></button>
                     </div>`;
 
-	toDoContainer.insertBefore(newToDo, toDoContainer.querySelector('.to-do'));
+	toDoContainer.insertBefore(
+		newToDo,
+		toDoContainer.querySelector('.to-do') || toDoContainer.querySelector('.to-do-dragger'),
+	);
 	newToDo.querySelector('.text').focus();
 }
 
@@ -651,6 +628,7 @@ async function addSection() {
                 </div>
 			</div>
 			<div class="to-do-container">
+			<div class="to-do-dragger"><span class="text"></span></div>
 			</div>`;
 
 	sectionContainer.querySelector('.spacer').after(newSection);

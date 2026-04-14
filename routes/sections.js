@@ -35,7 +35,6 @@ router.get('/delete', async (req, res) => {
 
 router.get('/new', async (req, res) => {
 	try {
-		console.log(req.user);
 		const result = await db.query(
 			'INSERT INTO sections (color, selected, order_num, user_id) VALUES ($1, $2, $3, $4) RETURNING id',
 			[req.query.color, false, 0, req.user.id],
