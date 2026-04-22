@@ -204,7 +204,7 @@ function stopMove(e) {
 let scrollIntt;
 const scrollMargint = 50;
 const maxScrollAmountt = 20;
-const minScrollAmountt = 1;
+const minScrollAmountt = 6;
 function startMoveToDo(e, activeElement, parent) {
 	const button = activeElement;
 	parent.classList.add('dragging-manual-parent');
@@ -238,19 +238,20 @@ function moveToDo(e) {
 			return;
 		}
 		scrollIntt = setInterval(() => {
-			let scrollAmount = mapNumberRange(
-				mapNumberRange(
-					e.clientY,
-					0,
-					parent.getBoundingClientRect().top + parent.offsetHeight,
-					parent.getBoundingClientRect().top + parent.offsetHeight,
-					0,
-				),
-				0,
-				scrollMargint,
-				maxScrollAmountt,
-				minScrollAmountt,
-			);
+			// let scrollAmount = mapNumberRange(
+			// 	mapNumberRange(
+			// 		e.clientY,
+			// 		0,
+			// 		parent.getBoundingClientRect().top + parent.offsetHeight,
+			// 		parent.getBoundingClientRect().top + parent.offsetHeight,
+			// 		0,
+			// 	),
+			// 	0,
+			// 	scrollMargint,
+			// 	maxScrollAmountt,
+			// 	minScrollAmountt,
+			// );
+			let scrollAmount = 5;
 			if (parent.offsetHeight + parent.scrollTop < parent.scrollHeight) {
 				parent.scrollTop += scrollAmount;
 				checkSwapToDo(e.clientY);
@@ -268,13 +269,15 @@ function moveToDo(e) {
 		}
 		scrollIntt = setInterval(() => {
 			if (parent.scrollTop > 0) {
-				let scrollAmount = mapNumberRange(
-					e.clientY - parent.getBoundingClientRect().top,
-					0,
-					scrollMargint,
-					maxScrollAmountt,
-					minScrollAmountt,
-				);
+				// let scrollAmount = mapNumberRange(
+				// 	e.clientY - parent.getBoundingClientRect().top,
+				// 	0,
+				// 	scrollMargint,
+				// 	maxScrollAmountt,
+				// 	minScrollAmountt,
+				// );
+				let scrollAmount = 6;
+
 				parent.scrollTop -= scrollAmount;
 				checkSwapToDo(e.clientY);
 			} else {
@@ -303,7 +306,6 @@ function moveToDo(e) {
 			mouseY > activeButton.nextElementSibling.getBoundingClientRect().top
 		) {
 			const nextElement = activeButton.nextElementSibling;
-			console.log([parent, nextElement, activeButton]);
 			parent.insertBefore(nextElement, activeButton);
 		}
 		if (
@@ -318,7 +320,7 @@ function moveToDo(e) {
 			previousElement.style.top = '20px';
 			setTimeout(() => {
 				previousElement.style.top = '0px';
-			}, 5);
+			}, 3);
 		}
 	}
 }
@@ -506,6 +508,9 @@ async function toggleToDoComplete(toDo) {
 
 //need to get param{element} yet and delete to dos inside section from index.js and figure out wich section to scroll to next
 async function deleteSection(id) {
+	if (!confirm('Are you sure you want to delete this section?')) {
+		return;
+	}
 	const element = document.querySelector(`.section[data-id="${id}"]`);
 	const result = await fetch(`sections/delete?id=${id}`);
 	if (result.status === 200) {
@@ -607,6 +612,23 @@ async function addSection() {
 						<circle cx="5" cy="19" r="1" />
 					</svg>
 					</button>
+				<button class="button" onclick="printSection(${data.id})" title="Print Section">
+					<svg 
+						xmlns="http://www.w3.org/2000/svg" 
+						width="24" 
+						height="24" 
+						viewBox="0 0 24 24" 
+						fill="none" 
+						stroke="currentColor" 
+						stroke-width="2" 
+						stroke-linecap="round" 
+						stroke-linejoin="round" 
+						class="lucide lucide-printer-icon lucide-printer">
+						<path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+						<path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/>
+						<rect x="6" y="14" width="12" height="8" rx="1"/>
+						</svg>
+					</button>
 				<button class="button" onclick="deleteSection(${data.id})" title="Delete Section">
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
@@ -670,4 +692,38 @@ async function sectionThemeChange(color, id) {
 	if (result.status === 200) {
 		sectionThemeInput(color, id);
 	}
+}
+
+function printSection(id) {
+	const section = document.querySelector(`.section[data-id="${id}"]`);
+
+	const toDos = section.querySelectorAll('.to-do');
+	let printToDos = '';
+	for (let i = 0; i < toDos.length; i++) {
+		const toDo = toDos[i];
+		const text = toDo.querySelector('.text').value;
+		if (text) {
+			printToDos += `<li ${toDo.classList.contains('completed') ? 'style="text-decoration: line-through;"' : ''}>${text}</li>`;
+		}
+	}
+
+	const printSection = `<div>
+	<h2>${section.querySelector('.top-bar .title').value}</h2>
+	<hr>
+	<ul id="print_to_dos" style="list-style-type: circle;">
+	${printToDos}
+	</ul>
+	</div>`;
+	const win = window.open('', '', 'width=800,height=600');
+	win.document.open();
+
+	win.document.write(
+		`<html><head><title>Print</title></head><body>${printSection}</body></html>`,
+	);
+
+	win.document.close();
+
+	win.print();
+	win.close();
+	win.print();
 }
