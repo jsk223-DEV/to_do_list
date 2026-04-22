@@ -202,6 +202,15 @@
 		</div>
 		<% })} %>
 		<div class="spacer"></div>
+		<div style="position:fixed; display:none;" class="section section-dragger selected">
+			<div class="top-bar">
+                
+			</div>
+			<div class="to-do-container">
+
+			</div>
+
+		</div>
 	</div>
 </main>
 
@@ -227,7 +236,6 @@
 	<% }) %>
 </datalist>
 
-<script src="/js/script.js"></script>
 <script>
 	const selectedSection = document.querySelector('.section.selected');
 	if(selectedSection){

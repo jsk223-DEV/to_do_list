@@ -1,4 +1,3 @@
-// import axios from 'axios';
 function scrollToSection(i) {
 	const section = document.querySelector(`.section[data-id="${i}"]`);
 	const currentSection = document.querySelector('.section.selected');
@@ -32,22 +31,26 @@ function scrollToSection(i) {
 	quickButton.classList.add('active');
 }
 
-let orignalX;
-let moveButton;
-let mouseX;
+let moveButtonRelative = 0;
 let scrollInt;
 const scrollMargin = 50;
 const maxScrollAmount = 20;
 const minScrollAmount = 1;
 function startMove(e, activeElement, parent) {
-	// console.log(e);
-	const button = activeElement;
+	moveButtonRelative =
+		e.target.getBoundingClientRect().left - activeElement.getBoundingClientRect().left;
+	const dragger = parent.querySelectorAll('.section-dragger')[0];
+	dragger.style.setProperty('--r', activeElement.style.getPropertyValue('--r'));
+	dragger.style.setProperty('--g', activeElement.style.getPropertyValue('--g'));
+	dragger.style.setProperty('--b', activeElement.style.getPropertyValue('--b'));
+	dragger.style.display = 'block';
+	dragger.style.width = activeElement.offsetWidth + 'px';
+	dragger.style.height = activeElement.offsetHeight + 'px';
+	dragger.style.top = activeElement.getBoundingClientRect().top + 'px';
+	dragger.style.left = e.clientX - moveButtonRelative + 'px';
+
 	parent.classList.add('dragging-manual-parent');
-	orignalX = e.target.getBoundingClientRect().left + e.target.offsetWidth / 2;
-	button.style.left = `${e.clientX - orignalX}px`;
-	moveButton = e.target;
-	button.style.zIndex = 1000;
-	button.classList.add('dragging-manual');
+	activeElement.classList.add('dragging-manual');
 	document.addEventListener('mousemove', move);
 	document.addEventListener('mouseup', stopMove);
 }
@@ -55,8 +58,8 @@ function startMove(e, activeElement, parent) {
 function move(e) {
 	const activeButton = document.querySelector('.dragging-manual');
 	const parent = document.querySelector('.dragging-manual-parent');
-	const dist = e.clientX - orignalX;
-	mouseX = e.clientX;
+	const dragger = document.querySelector('.section-dragger');
+	dragger.style.left = `${e.clientX - moveButtonRelative}px`;
 
 	if (
 		e.clientX >= parent.offsetLeft + parent.offsetWidth - scrollMargin &&
@@ -72,25 +75,25 @@ function move(e) {
 		}
 		scrollInt = setInterval(() => {
 			if (parent.offsetWidth + parent.scrollLeft < parent.scrollWidth) {
-				let scrollAmount = mapNumberRange(
-					mapNumberRange(
-						mouseX,
-						0,
-						parent.offsetLeft + parent.offsetWidth,
-						parent.offsetLeft + parent.offsetWidth,
-						0,
-					),
-					0,
-					scrollMargin,
-					maxScrollAmount,
-					minScrollAmount,
-				);
+				// let scrollAmount = mapNumberRange(
+				// 	mapNumberRange(
+				// 		e.clientX,
+				// 		0,
+				// 		parent.offsetLeft + parent.offsetWidth,
+				// 		parent.offsetLeft + parent.offsetWidth,
+				// 		0,
+				// 	),
+				// 	0,
+				// 	scrollMargin,
+				// 	maxScrollAmount,
+				// 	minScrollAmount,
+				// );
+				let scrollAmount = 8;
 				parent.scrollLeft += scrollAmount;
-				activeButton.style.left = `0px`;
-				checkSwap(mouseX);
+				checkSwap(e.clientX);
 			} else {
 				clearInterval(scrollInt);
-				orignalX = moveButton.getBoundingClientRect().left + moveButton.offsetWidth / 2;
+				scrollInt = undefined;
 			}
 		}, 20);
 	} else if (e.clientX <= parent.offsetLeft + scrollMargin && parent.scrollLeft > 0) {
@@ -99,32 +102,26 @@ function move(e) {
 		}
 		scrollInt = setInterval(() => {
 			if (parent.scrollLeft > 0) {
-				let scrollAmount = mapNumberRange(
-					mouseX - parent.offsetLeft,
-					0,
-					scrollMargin,
-					maxScrollAmount,
-					minScrollAmount,
-				);
+				// let scrollAmount = mapNumberRange(
+				// 	e.clientX - parent.offsetLeft,
+				// 	0,
+				// 	scrollMargin,
+				// 	maxScrollAmount,
+				// 	minScrollAmount,
+				// );
+				let scrollAmount = 8;
 				parent.scrollLeft -= scrollAmount;
-				activeButton.style.left = `0px`;
-				checkSwap(mouseX);
+				checkSwap(e.clientX);
 			} else {
 				clearInterval(scrollInt);
-				orignalX = moveButton.getBoundingClientRect().left + moveButton.offsetWidth / 2;
+				scrollInt = undefined;
 			}
 		}, 20);
 	} else {
 		if (scrollInt) {
 			clearInterval(scrollInt);
 			scrollInt = undefined;
-			orignalX = moveButton.getBoundingClientRect().left + moveButton.offsetWidth / 2;
 		}
-		// if (activeButton.nextElementSibling.classList.contains('spacer')) {
-		// 	parent.scrollLeft = parent.scrollWidth;
-		// }
-		activeButton.style.left = `${dist}px`;
-
 		checkSwap(e.clientX);
 	}
 
@@ -135,7 +132,6 @@ function move(e) {
 			mouseX + parent.scrollLeft > activeButton.nextElementSibling.offsetLeft
 		) {
 			const nextElement = activeButton.nextElementSibling;
-			// orignalX += nextElement.offsetWidth + 40;
 			const nextNavButton = document.querySelector(
 				`#nav button[data-id="${nextElement.dataset.id}"]`,
 			);
@@ -144,8 +140,6 @@ function move(e) {
 			);
 			document.querySelector('#nav').insertBefore(nextNavButton, currentNavButton);
 			nextElement.parentElement.insertBefore(nextElement, activeButton);
-			activeButton.style.left = '0px';
-			orignalX = moveButton.getBoundingClientRect().left + moveButton.offsetWidth / 2;
 		} else if (
 			activeButton.previousElementSibling &&
 			activeButton.previousElementSibling.classList.contains('spacer') == false &&
@@ -163,9 +157,6 @@ function move(e) {
 			document.querySelector('#nav').insertBefore(currentNavButton, previousNavButton);
 
 			previousElement.parentElement.insertBefore(activeButton, previousElement);
-			// orignalX -= previousElement.offsetWidth + 40;
-			activeButton.style.left = '0px';
-			orignalX = moveButton.getBoundingClientRect().left + moveButton.offsetWidth / 2;
 		}
 	}
 }
@@ -174,19 +165,19 @@ function stopMove(e) {
 	const transitionTime = 200;
 	const activeButton = document.querySelector('.dragging-manual');
 	const parent = document.querySelector('.dragging-manual-parent');
-	const sections = parent.querySelectorAll('.section');
+	const dragger = parent.querySelectorAll('.section-dragger')[0];
+	dragger.style.display = 'none';
+	const sections = parent.querySelectorAll('.section:not(.section-dragger)');
 	const orderArray = [];
 	sections.forEach((sect) => {
 		orderArray.push(sect.dataset.id);
 	});
-	// console.log(sections);
 	parent.classList.remove('dragging-manual-parent');
 	scrollInt && clearInterval(scrollInt);
 	scrollInt = undefined;
 	document.removeEventListener('mousemove', move);
 	document.removeEventListener('mouseup', stopMove);
-	activeButton.style.left = '0px';
-	activeButton.style.transition = `left ${transitionTime / 1000}s ease`;
+
 	setTimeout(async () => {
 		activeButton.style.transition = '';
 		activeButton.scrollIntoView({
