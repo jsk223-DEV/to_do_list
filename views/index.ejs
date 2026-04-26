@@ -74,28 +74,7 @@
 				<button title="Move Section" class="button move" onmousedown="startMove(event, this.parentElement.parentElement.parentElement, this.parentElement.parentElement.parentElement.parentElement)"
 					>
                     <div id="overlay"></div>
-                    <svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="black"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="lucide lucide-grip-icon lucide-grip"
-					>
-						<circle cx="12" cy="5" r="1" />
-						<circle cx="19" cy="5" r="1" />
-						<circle cx="5" cy="5" r="1" />
-						<circle cx="12" cy="12" r="1" />
-						<circle cx="19" cy="12" r="1" />
-						<circle cx="5" cy="12" r="1" />
-						<circle cx="12" cy="19" r="1" />
-						<circle cx="19" cy="19" r="1" />
-						<circle cx="5" cy="19" r="1" /></svg
-				></button>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-left-icon lucide-arrow-right-left"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></button>
 				<button class="button" onclick="printSection(<%= sect.id %>)" title="Print Section">
 					<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-printer-icon lucide-printer"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><path d="M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"/><rect x="6" y="14" width="12" height="8" rx="1"/></svg></button>
 				<button class="button" onclick="deleteSection(<%= sect.id %>)" title="Delete Section">
@@ -149,28 +128,7 @@
 							<% } %>
 						</button>
 						<button title="Move To Do" onmousedown="startMoveToDo(event, this.parentElement.parentElement, this.parentElement.parentElement.parentElement)" class="button move"
-							><div id="overlay"></div><svg
-								xmlns="http://www.w3.org/2000/svg"
-								width="24"
-								height="24"
-								viewBox="0 0 24 24"
-								fill="none"
-								stroke="black"
-								stroke-width="2"
-								stroke-linecap="round"
-								stroke-linejoin="round"
-								class="lucide lucide-grip-icon lucide-grip"
-							>
-								<circle cx="12" cy="5" r="1" />
-								<circle cx="19" cy="5" r="1" />
-								<circle cx="5" cy="5" r="1" />
-								<circle cx="12" cy="12" r="1" />
-								<circle cx="19" cy="12" r="1" />
-								<circle cx="5" cy="12" r="1" />
-								<circle cx="12" cy="19" r="1" />
-								<circle cx="19" cy="19" r="1" />
-								<circle cx="5" cy="19" r="1" /></svg
-						></button>
+							><div id="overlay"></div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-up-icon lucide-arrow-down-up"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg></button>
 
 						<button title="Delete To Do" class="button" onclick="deleteToDo(<%= toDo.id %>, this.parentElement.parentElement)"
 							><svg

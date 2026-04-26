@@ -395,27 +395,7 @@ async function addToDo(section) {
 							<path d="M20 6 9 17l-5-5" /></svg>
 					</button>
 					<button title="Move To Do" onmousedown="startMoveToDo(event, this.parentElement.parentElement, this.parentElement.parentElement.parentElement)" class="button move">
-                        <div id="overlay"></div><svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="24"
-							height="24"
-							viewBox="0 0 24 24"
-							fill="none"
-							stroke="black"
-							stroke-width="2"
-							stroke-linecap="round"
-							stroke-linejoin="round"
-							class="lucide lucide-grip-icon lucide-grip"
-						>
-							<circle cx="12" cy="5" r="1" />
-							<circle cx="19" cy="5" r="1" />
-							<circle cx="5" cy="5" r="1" />
-							<circle cx="12" cy="12" r="1" />
-							<circle cx="19" cy="12" r="1" />
-							<circle cx="5" cy="12" r="1" />
-							<circle cx="12" cy="19" r="1" />
-							<circle cx="19" cy="19" r="1" />
-							<circle cx="5" cy="19" r="1" /></svg>
+                        <div id="overlay"></div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-down-up-icon lucide-arrow-down-up"><path d="m3 16 4 4 4-4"/><path d="M7 20V4"/><path d="m21 8-4-4-4 4"/><path d="M17 4v16"/></svg>
                         </button>
 
 					<button title="Delete To Do" class="button" onclick="deleteToDo(${data.id}, this.parentElement.parentElement)"><svg
@@ -581,27 +561,7 @@ async function addSection() {
 				<input list="colors" id="color_${data.id}" type="color" class="color-input" onchange="sectionThemeChange(this.value, ${data.id} )" oninput="sectionThemeInput(this.value, ${data.id})">
 				<button title="Move Section" class="button move" onmousedown="startMove(event, this.parentElement.parentElement.parentElement, this.parentElement.parentElement.parentElement.parentElement)">
                     <div id="overlay"></div>
-                    <svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="24"
-						height="24"
-						viewBox="0 0 24 24"
-						fill="none"
-						stroke="black"
-						stroke-width="2"
-						stroke-linecap="round"
-						stroke-linejoin="round"
-						class="lucide lucide-grip-icon lucide-grip">
-						<circle cx="12" cy="5" r="1" />
-						<circle cx="19" cy="5" r="1" />
-						<circle cx="5" cy="5" r="1" />
-						<circle cx="12" cy="12" r="1" />
-						<circle cx="19" cy="12" r="1" />
-						<circle cx="5" cy="12" r="1" />
-						<circle cx="12" cy="19" r="1" />
-						<circle cx="19" cy="19" r="1" />
-						<circle cx="5" cy="19" r="1" />
-					</svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right-left-icon lucide-arrow-right-left"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>
 					</button>
 				<button class="button" onclick="printSection(${data.id})" title="Print Section">
 					<svg 
